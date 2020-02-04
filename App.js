@@ -8,6 +8,18 @@ import MealsNavigator from './navigation/MealsNavigator';
 import { enableScreens } from 'react-native-screens';
 enableScreens();
 
+// redux
+import { createStore, combineReducers } from 'redux';
+import { Provider } from 'react-redux';
+import mealsReducer from './store/reducers/meals';
+
+const rootReducer = combineReducers({
+  meals: mealsReducer
+});
+
+const store = createStore(rootReducer);
+
+// Fonts connect
 const fetchFonts = () => {
   return Font.loadAsync({
     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
@@ -27,5 +39,9 @@ export default function App() {
     );
   }
 
-  return <MealsNavigator />;
+  return (
+    <Provider store={store}>
+      <MealsNavigator />
+    </Provider>
+  );
 }

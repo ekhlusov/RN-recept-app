@@ -4,10 +4,11 @@ import HeaderLeftMenuBar from '../components/HeaderLeftMenuBar';
 import theme from '../constants/theme';
 import CustomHeaderButton from '../components/HeaderButton';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import DefaultText from '../components/DefaultText';
 
 const FilterSwitch = props => (
   <View style={styles.filterContainer}>
-    <Text>{props.label}</Text>
+    <DefaultText>{props.label}</DefaultText>
     <Switch
       trackColor={{ true: theme.colors.primaryColor }}
       thumbColor={theme.colors.primaryColor}
