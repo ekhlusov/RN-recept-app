@@ -8,6 +8,9 @@ import {
 } from 'react-native';
 import { CATEGORIES } from '../data/dummy-data';
 import CategoryGridTile from '../components/CategoryGridTile';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import CustomHeaderButton from '../components/HeaderButton';
+import HeaderLeftMenuBar from '../components/HeaderLeftMenuBar';
 
 const CategoriesScreen = props => {
   const renderGridItem = itemData => {
@@ -30,6 +33,13 @@ const CategoriesScreen = props => {
   return (
     <FlatList data={CATEGORIES} renderItem={renderGridItem} numColumns={2} />
   );
+};
+
+CategoriesScreen.navigationOptions = navData => {
+  return {
+    headerTitle: 'Meal Categories',
+    headerLeft: () => <HeaderLeftMenuBar navData={navData} />
+  };
 };
 
 const styles = StyleSheet.create({
