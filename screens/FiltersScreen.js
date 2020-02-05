@@ -6,6 +6,10 @@ import CustomHeaderButton from '../components/HeaderButton';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import DefaultText from '../components/DefaultText';
 
+// new redux
+import { useDispatch } from 'react-redux';
+import { setFilters } from '../store/actions/meals.action';
+
 const FilterSwitch = props => (
   <View style={styles.filterContainer}>
     <DefaultText>{props.label}</DefaultText>
@@ -26,6 +30,8 @@ const FiltersScreen = props => {
   const [isVegan, setIsVegan] = useState(false);
   const [isVegetarian, setIsVegetarian] = useState(false);
 
+  const dispatch = useDispatch();
+
   // memory leak and update fix
   const saveFilters = useCallback(() => {
     const appliedFilters = {
@@ -35,8 +41,11 @@ const FiltersScreen = props => {
       vegetarian: isVegetarian
     };
 
+    // redux
+    dispatch(setFilters(appliedFilters));
+
     ToastAndroid.show('Filters saved!', 3000);
-  }, [isGlutenFree, isLactoseFree, isVegan, isVegetarian]);
+  }, [isGlutenFree, isLactoseFree, isVegan, isVegetarian, dispatch]);
 
   useEffect(() => {
     navigation.setParams({ save: saveFilters });

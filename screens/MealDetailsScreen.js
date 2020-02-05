@@ -1,16 +1,13 @@
-import React from 'react';
-import {
-  ScrollView,
-  View,
-  StyleSheet,
-  Text,
-  Button,
-  Image
-} from 'react-native';
+import React, { useEffect, useCallback } from 'react';
+import { ScrollView, View, StyleSheet, Text, Image } from 'react-native';
 import { MEALS } from '../data/dummy-data';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../components/HeaderButton';
 import DefaultText from '../components/DefaultText';
+
+// new redux
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleFavorite } from '../store/actions/meals.action';
 
 const ListItem = props => (
   <View style={styles.listItem}>
@@ -19,9 +16,30 @@ const ListItem = props => (
 );
 
 const MealDetailsScreen = props => {
+  const availableMeals = useSelector(state => state.meals.meals);
   const mealId = props.navigation.getParam('mealId');
 
-  const selectedMeal = MEALS.find(meal => meal.id === mealId);
+  // check if in array
+  const isCurrentMealFav = useSelector(state =>
+    state.meals.favoriteMeals.some(meal => meal.id === mealId)
+  );
+
+  const selectedMeal = availableMeals.find(meal => meal.id === mealId);
+
+  const dispatch = useDispatch();
+
+  // fixed performance
+  const toggleFavHandler = useCallback(() => {
+    dispatch(toggleFavorite(mealId));
+  }, [dispatch, mealId]);
+
+  useEffect(() => {
+    props.navigation.setParams({ toggleFav: toggleFavHandler });
+  }, [toggleFavHandler]);
+
+  useEffect(() => {
+    props.navigation.setParams({ isFav: isCurrentMealFav });
+  }, [isCurrentMealFav]);
 
   return (
     <ScrollView>
@@ -48,11 +66,12 @@ const MealDetailsScreen = props => {
 
 // Title
 MealDetailsScreen.navigationOptions = navData => {
-  const mealId = navData.navigation.getParam('mealId');
-  const selectedMeal = MEALS.find(meal => meal.id === mealId);
+  const mealTitle = navData.navigation.getParam('mealTitle');
+  const toggleFav = navData.navigation.getParam('toggleFav');
+  const isFav = navData.navigation.getParam('isFav');
 
   return {
-    headerTitle: selectedMeal.title,
+    headerTitle: mealTitle,
     headerRight: () => (
       <HeaderButtons
         title="Fav Buttons"
@@ -60,10 +79,8 @@ MealDetailsScreen.navigationOptions = navData => {
       >
         <Item
           title="Fav"
-          iconName="ios-star"
-          onPress={() => {
-            alert('Fav saved');
-          }}
+          iconName={isFav ? 'ios-star' : 'ios-star-outline'}
+          onPress={toggleFav}
         />
       </HeaderButtons>
     )

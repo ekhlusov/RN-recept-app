@@ -1,12 +1,21 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import MealList from '../components/MealList';
-import { MEALS } from '../data/dummy-data';
 import HeaderLeftMenuBar from '../components/HeaderLeftMenuBar';
 
-const FavouritesScreen = props => {
-  const favs = MEALS.filter(meal => meal.id === 'm1' || meal.id === 'm2');
+// new redux
+import { useSelector } from 'react-redux';
+import DefaultText from '../components/DefaultText';
 
+const FavouritesScreen = props => {
+  const favs = useSelector(state => state.meals.favoriteMeals);
+  if (favs.length === 0 || !favs) {
+    return (
+      <View style={styles.screen}>
+        <DefaultText>No Favorite Meals Found. Start adding some!</DefaultText>
+      </View>
+    );
+  }
   return <MealList listData={favs} navigation={props.navigation} />;
 };
 
